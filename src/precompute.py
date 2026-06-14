@@ -289,6 +289,7 @@ def main():
     t0 = time.time()
 
     model = SentenceTransformer(EMBEDDING_MODEL)
+    model = model.to("mps")
 
     texts = [build_embedding_text(c) for c in candidates]
 
