@@ -1,0 +1,6 @@
+sentence-transformers==3.4.1
+numpy==2.2.3
+pandas==2.2.3
+pyarrow==19.0.1
+tqdm==4.67.1
+torch>=2.0.0
