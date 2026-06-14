@@ -1,0 +1,8 @@
+venv/
+data/candidates.jsonl
+artefacts/embeddings.npy
+artefacts/metadata.parquet
+artefacts/jd_embedding.npy
+__pycache__/
+*.pyc
+.DS_Store
