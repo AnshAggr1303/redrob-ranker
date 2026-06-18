@@ -358,11 +358,8 @@ def main():
     # Consulting-only career
     mask_consulting = metadata["all_consulting"].astype(bool)
 
-    # Irrelevant title — vectorized string check
-    def is_irrelevant_title(title: str) -> bool:
-        return str(title).lower().strip() in IRRELEVANT_TITLES
-
-    mask_irrelevant = metadata["current_title"].apply(is_irrelevant_title)
+    # Irrelevant title — vectorized
+    mask_irrelevant = metadata["current_title"].str.lower().str.strip().isin(IRRELEVANT_TITLES)
 
     # Outside India and not willing to relocate
     mask_foreign = (metadata["country"] != "India") & (~metadata["willing_to_relocate"].astype(bool))
@@ -412,22 +409,66 @@ def main():
     print("\n[4/5] Computing structured scores and availability multipliers ...")
     t0 = time.time()
 
-    metadata["S_struct"]   = metadata.apply(compute_structured_score, axis=1)
-    metadata["avail_mult"] = metadata.apply(compute_availability_multiplier, axis=1)
-
-    # GitHub normalized bonus [0, 0.04]
+    # Vectorized structured score (replaces compute_structured_score apply loop)
+    yoe    = metadata["years_of_experience"]
+    notice = metadata["notice_period_days"]
     github_raw = metadata["github_activity_score"].clip(lower=0)
+    assess = metadata["relevant_assess_score"]
+
+    yoe_score = np.select(
+        [(yoe >= 5) & (yoe <= 9),
+         ((yoe >= 4) & (yoe < 5)) | ((yoe > 9) & (yoe <= 11)),
+         yoe > 12],
+        [0.10, 0.05, -0.05],
+        default=0.0,
+    )
+
+    loc_lower = metadata["location"].str.lower().fillna("")
+    india_mask   = metadata["country"] == "India"
+    relocate_mask = metadata["willing_to_relocate"].astype(bool)
+    preferred_mask  = loc_lower.str.contains("|".join(PREFERRED_LOCATIONS), na=False)
+    acceptable_mask = ~preferred_mask & loc_lower.str.contains("|".join(ACCEPTABLE_LOCATIONS), na=False)
+    loc_score = np.select(
+        [preferred_mask, acceptable_mask, india_mask & relocate_mask, india_mask],
+        [0.08, 0.06, 0.04, 0.02],
+        default=0.02,
+    )
+
+    notice_score  = np.select([notice <= 30, notice <= 60], [0.06, 0.02], default=0.0)
+    github_struct = np.select([github_raw >= 70, github_raw >= 40], [0.06, 0.04], default=0.0)
+    edu_score     = np.select(
+        [metadata["best_education_tier"] == "tier_1",
+         metadata["best_education_tier"] == "tier_2"],
+        [0.03, 0.01], default=0.0,
+    )
+    consulting_pen = np.where(metadata["has_mixed_consulting"].astype(bool), -0.03, 0.0)
+    assess_struct  = np.where(assess >= 70, 0.02, 0.0)
+
+    metadata["S_struct"] = (yoe_score + loc_score + notice_score +
+                             github_struct + edu_score + consulting_pen + assess_struct)
+
+    # Vectorized availability multiplier (replaces compute_availability_multiplier apply loop)
+    days_since = (EVALUATION_ANCHOR_DATE - pd.to_datetime(metadata["last_active_date"])).dt.days
+    f_active = np.select(
+        [days_since <= 30, days_since <= 90, days_since <= 180],
+        [1.00, 0.85, 0.65], default=0.40,
+    )
+    f_open      = np.where(metadata["open_to_work_flag"].astype(bool), 1.00, 0.85)
+    f_response  = 0.60 + (metadata["recruiter_response_rate"].astype(float) * 0.40)
+    icr         = metadata["interview_completion_rate"].astype(float)
+    f_interview = np.select([icr >= 0.80, icr >= 0.50], [1.00, 0.90], default=0.75)
+    metadata["avail_mult"] = np.clip(f_active * f_open * f_response * f_interview, 0.35, 1.0)
+
+    # Layer 5 — GitHub and assessment as independent 5% layers, both normalized 0–1
     metadata["github_norm"] = (github_raw / 100.0).clip(0, 1)
+    metadata["assess_norm"] = (assess / 100.0).clip(0, 1)   # fix: was bool*0.02 * 0.05 = 0.001 max
 
-    # Assessment bonus
-    metadata["assess_bonus"] = (metadata["relevant_assess_score"] >= 70).astype(float) * 0.02
-
-    # Layer 5 — final formula
+    # Final formula
     metadata["S_final"] = (
         (metadata["S_sem"] * 0.55 + metadata["S_struct"] * 0.30)
         * metadata["avail_mult"]
         + metadata["github_norm"] * 0.05
-        + metadata["assess_bonus"] * 0.05
+        + metadata["assess_norm"] * 0.05
     )
 
     # Zero out disqualified candidates

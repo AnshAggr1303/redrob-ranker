@@ -298,7 +298,7 @@ def main():
     df = pd.DataFrame(rows)
     meta_path = out_dir / "metadata.parquet"
     df.to_parquet(meta_path, index=False)
-    print(f"      Metadata shape: {df.shape} → {meta_path}")
+    print(f"      Metadata shape: {df.shape} -> {meta_path}")
     print(f"      Done in {time.time()-t0:.1f}s")
 
     # ------------------------------------------------------------------
@@ -330,7 +330,7 @@ def main():
 
         emb_path = out_dir / "embeddings.npy"
         np.save(emb_path, all_embeddings.astype(np.float32))
-        print(f"      Embeddings shape: {all_embeddings.shape} → {emb_path}")
+        print(f"      Embeddings shape: {all_embeddings.shape} -> {emb_path}")
         print(f"      Done in {time.time()-t0:.1f}s")
 
         # --------------------------------------------------------------
@@ -350,7 +350,7 @@ def main():
 
         jd_path = out_dir / "jd_embedding.npy"
         np.save(jd_path, jd_embedding.astype(np.float32))
-        print(f"      JD embedding shape: {jd_embedding.shape} → {jd_path}")
+        print(f"      JD embedding shape: {jd_embedding.shape} -> {jd_path}")
         print(f"      Done in {time.time()-t0:.1f}s")
 
     # ------------------------------------------------------------------
