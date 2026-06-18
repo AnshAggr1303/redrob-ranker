@@ -9,9 +9,12 @@ Run once locally. No time limit. Produces four artefacts in ./artefacts/:
   - honeypot_ids.txt     one CAND_XXXXXXX per line
 
 Usage:
-    python precompute.py --candidates ./data/candidates.jsonl \
-                         --jd ./data/signal_jd.txt \
-                         --out ./artefacts
+    python src/precompute.py --candidates ./data/candidates.jsonl \
+                             --jd ./data/signal_jd.txt \
+                             --out ./artefacts
+
+    # Skip embedding steps (when only honeypot logic changed):
+    python src/precompute.py --skip-embeddings
 
 Dependencies:
     pip install sentence-transformers numpy pandas pyarrow tqdm
@@ -19,9 +22,7 @@ Dependencies:
 
 import argparse
 import json
-import os
 import re
-import sys
 import time
 from datetime import datetime
 from pathlib import Path
@@ -39,8 +40,10 @@ from tqdm import tqdm
 EMBEDDING_MODEL = "all-MiniLM-L6-v2"
 BATCH_SIZE = 512
 
+# Fixed anchor — same as rank.py so both scripts agree on "today"
+EVALUATION_ANCHOR = datetime(2026, 6, 13)
+
 # Consulting firm patterns — normalized regex (case-insensitive)
-# Strips common suffixes before matching
 CONSULTING_PATTERNS = [
     r"\btcs\b",
     r"\binfosys\b",
@@ -64,6 +67,7 @@ RELEVANT_ASSESSMENTS = {
     "nlp", "python", "machine learning", "information retrieval",
     "embeddings", "recommendation systems", "search", "deep learning",
     "vector search", "ranking", "retrieval", "transformers",
+    "fine-tuning llms", "llm",
 }
 
 
@@ -88,6 +92,7 @@ def build_embedding_text(candidate: dict) -> str:
     """
     Concatenate headline + summary + all career descriptions.
     No skills, no certifications — narrative only.
+    Excluding skills prevents keyword stuffers from gaming the semantic score.
     """
     profile = candidate["profile"]
     parts = [
@@ -103,44 +108,61 @@ def build_embedding_text(candidate: dict) -> str:
 
 def detect_honeypot(candidate: dict) -> list[str]:
     """
-    Return list of honeypot flag strings. Empty list = clean candidate.
+    Detect subtly impossible profiles as defined in the submission spec.
+    Spec says: ~80 honeypots with "subtly impossible profiles".
+    Examples given: "8 years at a company founded 3 years ago",
+                    "expert proficiency in 10 skills with 0 years used"
 
-    Rules:
-    1. Inverted salary (min > max)
-    2. Any skill duration_months > total_career_months + 6
-    3. Claimed YOE vs actual career span: total_career_months < YOE * 12 * 0.5
-    4. Expert skill with duration_months == 0
+    Rule 1 — Expert + 0 duration (3+ instances to avoid penalising typos)
+    Rule 2 — Temporal anomaly: claimed job duration exceeds calendar span by 12+ months
+             (the spec's "8 years at a 3-year-old company" example)
+
+    Deliberately excluded:
+    - Inverted salary (min > max): affects 18,865 candidates — synthetic data artifact
+    - Skill duration > total career months: punishes pre-employment learning
+    - YOE vs career span: senior engineers routinely list only recent roles
     """
     flags = []
-    signals = candidate.get("redrob_signals", {})
-    profile = candidate.get("profile", {})
-    career = candidate.get("career_history", [])
     skills = candidate.get("skills", [])
 
-    # Rule 1 — inverted salary
-    sal = signals.get("expected_salary_range_inr_lpa", {})
-    if sal.get("min") is not None and sal.get("max") is not None:
-        if sal["min"] > sal["max"]:
-            flags.append(f"INVERTED_SALARY:{sal['min']:.1f}>{sal['max']:.1f}")
+    # Rule 1 — Expert proficiency with 0 duration_months (3+ instances)
+    expert_zero = [
+        sk["name"] for sk in skills
+        if sk.get("proficiency") == "expert" and sk.get("duration_months", 0) == 0
+    ]
+    if len(expert_zero) >= 3:
+        flags.append(f"EXPERT_ZERO_DURATION:{len(expert_zero)}skills")
 
-    # Total career months
-    total_months = sum(r.get("duration_months", 0) for r in career)
+    # Rule 2 — Temporal anomaly per job entry
+    for job in candidate.get("career_history", []):
+        claimed_months = job.get("duration_months", 0)
+        start_str = job.get("start_date")
 
-    # Rule 2 — skill duration overflow
-    for sk in skills:
-        sk_months = sk.get("duration_months", 0)
-        if sk_months > total_months + 6:
-            flags.append(f"SKILL_OVERFLOW:{sk['name']}:{sk_months}mo>career:{total_months}mo")
+        if not start_str or claimed_months == 0:
+            continue
 
-    # Rule 3 — YOE vs career span mismatch
-    yoe = profile.get("years_of_experience", 0) or 0
-    if total_months < (yoe * 12) * 0.5 and yoe > 1:
-        flags.append(f"YOE_MISMATCH:claims_{yoe}yr_but_{total_months}mo_career")
+        try:
+            start_date = datetime.strptime(start_str, "%Y-%m-%d")
 
-    # Rule 4 — expert skill with 0 duration
-    for sk in skills:
-        if sk.get("proficiency") == "expert" and sk.get("duration_months", 0) == 0:
-            flags.append(f"EXPERT_ZERO_DURATION:{sk['name']}")
+            # Use anchor date for current roles
+            if job.get("is_current") or not job.get("end_date"):
+                end_date = EVALUATION_ANCHOR
+            else:
+                end_date = datetime.strptime(job["end_date"], "%Y-%m-%d")
+
+            physical_months = (
+                (end_date.year - start_date.year) * 12
+                + (end_date.month - start_date.month)
+            )
+
+            # Flag only if claimed duration exceeds calendar by 12+ months
+            if claimed_months > physical_months + 12:
+                flags.append(
+                    f"TEMPORAL_ANOMALY:claimed_{claimed_months}mo_vs_calendar_{physical_months}mo"
+                )
+
+        except ValueError:
+            pass  # Skip malformed dates rather than crashing
 
     return flags
 
@@ -171,14 +193,13 @@ def extract_metadata(candidate: dict) -> dict:
     edu_tiers = [e.get("tier", "unknown") for e in education]
     best_tier = min(edu_tiers, key=lambda t: tier_order.get(t, 5)) if edu_tiers else "unknown"
 
-    # Skill assessment scores — check for relevant ones
+    # Best relevant skill assessment score
     assess_scores = signals.get("skill_assessment_scores", {}) or {}
     relevant_assess_score = max(
         (v for k, v in assess_scores.items() if k.lower() in RELEVANT_ASSESSMENTS),
         default=0.0,
     )
 
-    # Last active date as string (converted to datetime in rank.py)
     last_active = signals.get("last_active_date", "2020-01-01")
 
     return {
@@ -197,7 +218,6 @@ def extract_metadata(candidate: dict) -> dict:
         "has_mixed_consulting": has_mixed_consulting,
         "best_education_tier": best_tier,
         "relevant_assess_score": relevant_assess_score,
-        # redrob_signals
         "last_active_date": last_active,
         "open_to_work_flag": signals.get("open_to_work_flag", False),
         "notice_period_days": signals.get("notice_period_days", 90),
@@ -225,6 +245,8 @@ def main():
                         help="Path to signal_jd.txt")
     parser.add_argument("--out", default="./artefacts",
                         help="Output directory for artefacts")
+    parser.add_argument("--skip-embeddings", action="store_true",
+                        help="Skip steps 4+5 (embeddings). Use when only honeypot/metadata changed.")
     args = parser.parse_args()
 
     out_dir = Path(args.out)
@@ -264,13 +286,11 @@ def main():
 
     print(f"      Found {len(honeypot_ids):,} honeypots in {time.time()-t0:.1f}s")
     print(f"      Written to {honeypot_path}")
-
-    # Print sample flags for verification
     for entry in honeypot_log[:5]:
         print(f"      {entry['id']}: {entry['flags']}")
 
     # ------------------------------------------------------------------
-    # Step 3: Extract metadata -> parquet
+    # Step 3: Extract metadata → parquet
     # ------------------------------------------------------------------
     print(f"\n[3/5] Extracting structured metadata ...")
     t0 = time.time()
@@ -278,67 +298,74 @@ def main():
     df = pd.DataFrame(rows)
     meta_path = out_dir / "metadata.parquet"
     df.to_parquet(meta_path, index=False)
-    print(f"      Metadata shape: {df.shape} -> {meta_path}")
+    print(f"      Metadata shape: {df.shape} → {meta_path}")
     print(f"      Done in {time.time()-t0:.1f}s")
 
     # ------------------------------------------------------------------
-    # Step 4: Build candidate embeddings
+    # Step 4: Build candidate embeddings (skippable)
     # ------------------------------------------------------------------
-    print(f"\n[4/5] Building candidate embeddings (model: {EMBEDDING_MODEL}) ...")
-    print(f"      This will take a few minutes for 100k candidates ...")
-    t0 = time.time()
+    if args.skip_embeddings:
+        print(f"\n[4/5] Skipping embeddings (--skip-embeddings flag set)")
+        print(f"[5/5] Skipping JD embedding")
+    else:
+        print(f"\n[4/5] Building candidate embeddings (model: {EMBEDDING_MODEL}) ...")
+        print(f"      This will take several minutes for 100k candidates ...")
+        t0 = time.time()
 
-    import torch
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-    model = SentenceTransformer(EMBEDDING_MODEL, device=device)
-    print(f"      Using device: {device}")
+        import torch
+        device = "mps" if torch.backends.mps.is_available() else \
+                 "cuda" if torch.cuda.is_available() else "cpu"
+        model = SentenceTransformer(EMBEDDING_MODEL, device=device)
+        print(f"      Using device: {device}")
 
-    texts = [build_embedding_text(c) for c in candidates]
+        texts = [build_embedding_text(c) for c in candidates]
 
-    # Encode in batches with progress bar
-    all_embeddings = model.encode(
-        texts,
-        batch_size=BATCH_SIZE,
-        show_progress_bar=True,
-        convert_to_numpy=True,
-        normalize_embeddings=False,   # we normalize in rank.py for cosine sim
-    ).astype(np.float32)
+        all_embeddings = model.encode(
+            texts,
+            batch_size=BATCH_SIZE,
+            show_progress_bar=True,
+            convert_to_numpy=True,
+            normalize_embeddings=False,
+        ).astype(np.float32)
 
-    emb_path = out_dir / "embeddings.npy"
-    np.save(emb_path, all_embeddings.astype(np.float32))
-    print(f"      Embeddings shape: {all_embeddings.shape} -> {emb_path}")
-    print(f"      Done in {time.time()-t0:.1f}s")
+        emb_path = out_dir / "embeddings.npy"
+        np.save(emb_path, all_embeddings.astype(np.float32))
+        print(f"      Embeddings shape: {all_embeddings.shape} → {emb_path}")
+        print(f"      Done in {time.time()-t0:.1f}s")
 
-    # ------------------------------------------------------------------
-    # Step 5: JD embedding
-    # ------------------------------------------------------------------
-    print(f"\n[5/5] Building JD embedding from {args.jd} ...")
-    t0 = time.time()
+        # --------------------------------------------------------------
+        # Step 5: JD embedding
+        # --------------------------------------------------------------
+        print(f"\n[5/5] Building JD embedding from {args.jd} ...")
+        t0 = time.time()
 
-    with open(args.jd, "r", encoding="utf-8") as f:
-        jd_text = f.read().strip()
+        with open(args.jd, "r", encoding="utf-8") as f:
+            jd_text = f.read().strip()
 
-    jd_embedding = model.encode(
-        [jd_text],
-        convert_to_numpy=True,
-        normalize_embeddings=False,
-    )[0].astype(np.float32)
+        jd_embedding = model.encode(
+            [jd_text],
+            convert_to_numpy=True,
+            normalize_embeddings=False,
+        )[0].astype(np.float32)
 
-    jd_path = out_dir / "jd_embedding.npy"
-    np.save(jd_path, jd_embedding.astype(np.float32))
-    print(f"      JD embedding shape: {jd_embedding.shape} -> {jd_path}")
-    print(f"      Done in {time.time()-t0:.1f}s")
+        jd_path = out_dir / "jd_embedding.npy"
+        np.save(jd_path, jd_embedding.astype(np.float32))
+        print(f"      JD embedding shape: {jd_embedding.shape} → {jd_path}")
+        print(f"      Done in {time.time()-t0:.1f}s")
 
     # ------------------------------------------------------------------
     # Summary
     # ------------------------------------------------------------------
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("Pre-computation complete. Artefacts:")
     for fname in ["embeddings.npy", "jd_embedding.npy", "metadata.parquet", "honeypot_ids.txt"]:
         p = out_dir / fname
-        size_mb = p.stat().st_size / (1024 * 1024)
-        print(f"  {fname:<25} {size_mb:>8.1f} MB")
-    print("="*60)
+        if p.exists():
+            size_mb = p.stat().st_size / (1024 * 1024)
+            print(f"  {fname:<25} {size_mb:>8.1f} MB")
+        else:
+            print(f"  {fname:<25}   (skipped)")
+    print("=" * 60)
     print("\nReady to run rank.py\n")
 
 

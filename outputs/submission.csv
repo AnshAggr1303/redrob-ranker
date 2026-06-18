@@ -1,0 +1,101 @@
+candidate_id,rank,score,reasoning
+CAND_0002025,1,0.421373,Exceptional fit driven by 5.9 years in applied ML/AI engineering with a relevant title (Senior AI Engineer).
+CAND_0065195,2,0.412162,Exceptional fit driven by 5.1 years in applied ML/AI engineering with a relevant title (Search Engineer).
+CAND_0046525,3,0.410358,Exceptional fit driven by 6.1 years in applied ML/AI engineering with a relevant title (Senior Machine Learning Engineer).
+CAND_0039754,4,0.402369,Exceptional fit driven by strong open-source activity (GitHub score: 77/100). Note: an experience level of 16.2 years outside the preferred 5–9 range.
+CAND_0088025,5,0.399593,Exceptional fit driven by 8.6 years in applied ML/AI engineering with a relevant title (Staff Machine Learning Engineer).
+CAND_0064326,6,0.396985,Exceptional fit driven by 7.6 years in applied ML/AI engineering with a relevant title (Search Engineer).
+CAND_0077337,7,0.377144,Exceptional fit driven by 7.0 years in applied ML/AI engineering with a relevant title (Staff Machine Learning Engineer).
+CAND_0018499,8,0.358785,Exceptional fit driven by 7.2 years in applied ML/AI engineering with a relevant title (Senior Machine Learning Engineer).
+CAND_0010603,9,0.356529,Exceptional fit driven by 5.3 years in applied ML/AI engineering with a relevant title (ML Engineer).
+CAND_0050876,10,0.354399,Exceptional fit driven by 6.0 years in applied ML/AI engineering with a relevant title (Applied ML Engineer).
+CAND_0080534,11,0.354235,Exceptional fit driven by strong open-source activity (GitHub score: 81/100). Note: an experience level of 3.8 years outside the preferred 5–9 range.
+CAND_0065786,12,0.348646,Exceptional fit driven by strong open-source activity (GitHub score: 70/100).
+CAND_0008295,13,0.347188,Exceptional fit driven by 6.5 years in applied ML/AI engineering with a relevant title (AI Research Engineer). Note: partial consulting-firm tenure in career history.
+CAND_0052328,14,0.344375,Exceptional fit driven by 6.5 years in applied ML/AI engineering with a relevant title (Recommendation Systems Engineer).
+CAND_0096142,15,0.340865,Exceptional fit driven by 5.0 years in applied ML/AI engineering with a relevant title (Applied ML Engineer). Note: a long notice period of 120 days.
+CAND_0014909,16,0.34047,Exceptional fit driven by strong open-source activity (GitHub score: 67/100). Note: a long notice period of 120 days.
+CAND_0071974,17,0.339225,Exceptional fit driven by 7.8 years in applied ML/AI engineering with a relevant title (Senior AI Engineer).
+CAND_0068932,18,0.337991,Exceptional fit driven by 5.2 years in applied ML/AI engineering with a relevant title (ML Engineer).
+CAND_0035879,19,0.337756,Exceptional fit driven by strong open-source activity (GitHub score: 84/100). Note: a long notice period of 120 days.
+CAND_0006418,20,0.335661,Exceptional fit driven by 5.7 years in applied ML/AI engineering with a relevant title (Machine Learning Engineer).
+CAND_0092706,21,0.333653,Exceptional fit driven by 5.8 years in applied ML/AI engineering with a relevant title (AI Research Engineer). Note: a long notice period of 120 days.
+CAND_0053605,22,0.333342,Exceptional fit driven by 6.9 years in applied ML/AI engineering with a relevant title (Senior Software Engineer (ML)). Note: partial consulting-firm tenure in career history.
+CAND_0046064,23,0.332578,Exceptional fit driven by 8.9 years in applied ML/AI engineering with a relevant title (Senior NLP Engineer).
+CAND_0061257,24,0.332468,Exceptional fit driven by 8.0 years in applied ML/AI engineering with a relevant title (Staff Machine Learning Engineer).
+CAND_0005538,25,0.332397,Exceptional fit driven by 5.9 years in applied ML/AI engineering with a relevant title (Senior AI Engineer).
+CAND_0041610,26,0.331399,"Solid technical baseline with 6.7 years in applied ML/AI engineering with a relevant title (Recommendation Systems Engineer), though limited by limited platform engagement signals."
+CAND_0042506,27,0.327626,"Solid technical baseline with strong open-source activity (GitHub score: 64/100), though limited by limited platform engagement signals."
+CAND_0041669,28,0.327203,"Solid technical baseline with 8.0 years in applied ML/AI engineering with a relevant title (Recommendation Systems Engineer), though limited by limited platform engagement signals."
+CAND_0099806,29,0.326752,"Solid technical baseline with strong open-source activity (GitHub score: 86/100), though limited by limited platform engagement signals."
+CAND_0052682,30,0.326239,"Solid technical baseline with 6.6 years in applied ML/AI engineering with a relevant title (NLP Engineer), though limited by limited platform engagement signals."
+CAND_0011687,31,0.325789,"Solid technical baseline with 7.8 years in applied ML/AI engineering with a relevant title (Senior NLP Engineer), though limited by limited platform engagement signals."
+CAND_0014440,32,0.324349,"Solid technical baseline with 6.4 years in applied ML/AI engineering with a relevant title (Recommendation Systems Engineer), though limited by limited platform engagement signals."
+CAND_0043860,33,0.322292,"Solid technical baseline with 6.1 years in applied ML/AI engineering with a relevant title (Junior ML Engineer), though limited by limited platform engagement signals."
+CAND_0098846,34,0.320905,"Solid technical baseline with 7.6 years in applied ML/AI engineering with a relevant title (AI Engineer), though limited by limited platform engagement signals."
+CAND_0028422,35,0.320127,"Solid technical baseline with 5.5 years in applied ML/AI engineering with a relevant title (Junior ML Engineer), though limited by limited platform engagement signals."
+CAND_0070525,36,0.318131,"Solid technical baseline with 5.4 years in applied ML/AI engineering with a relevant title (Senior Software Engineer (ML)), though limited by limited platform engagement signals."
+CAND_0083852,37,0.317612,"Solid technical baseline with 6.0 years in applied ML/AI engineering with a relevant title (Data Scientist), though limited by limited platform engagement signals."
+CAND_0074225,38,0.316797,"Solid technical baseline with 4.3 years in applied ML/AI engineering with a relevant title (Machine Learning Engineer), though limited by a long notice period of 120 days."
+CAND_0020991,39,0.316506,"Solid technical baseline with strong open-source activity (GitHub score: 64/100), though limited by a long notice period of 120 days."
+CAND_0000031,40,0.314914,"Solid technical baseline with 6.0 years in applied ML/AI engineering with a relevant title (Recommendation Systems Engineer), though limited by limited platform engagement signals."
+CAND_0006567,41,0.314202,"Solid technical baseline with 7.9 years in applied ML/AI engineering with a relevant title (Senior AI Engineer), though limited by limited platform engagement signals."
+CAND_0043381,42,0.314148,"Solid technical baseline with strong open-source activity (GitHub score: 70/100), though limited by an experience level of 3.6 years outside the preferred 5–9 range."
+CAND_0079387,43,0.312828,"Solid technical baseline with 6.9 years in applied ML/AI engineering with a relevant title (AI Engineer), though limited by limited platform engagement signals."
+CAND_0077956,44,0.312093,"Solid technical baseline with engineering experience at Niramai in the HealthTech AI sector, though limited by a long notice period of 120 days."
+CAND_0081846,45,0.311335,"Solid technical baseline with 6.7 years in applied ML/AI engineering with a relevant title (Lead AI Engineer), though limited by limited platform engagement signals."
+CAND_0007596,46,0.310746,"Solid technical baseline with 4.4 years in applied ML/AI engineering with a relevant title (Junior ML Engineer), though limited by limited platform engagement signals."
+CAND_0018722,47,0.3087,"Solid technical baseline with 6.6 years in applied ML/AI engineering with a relevant title (Recommendation Systems Engineer), though limited by an overseas location (Canada) requiring relocation before joining."
+CAND_0093912,48,0.308589,"Solid technical baseline with 5.3 years in applied ML/AI engineering with a relevant title (Senior Data Scientist), though limited by limited platform engagement signals."
+CAND_0024549,49,0.308416,"Solid technical baseline with engineering experience at Infosys in the IT Services sector, though limited by partial consulting-firm tenure in career history."
+CAND_0054100,50,0.308332,"Solid technical baseline with 6.0 years in applied ML/AI engineering with a relevant title (Junior ML Engineer), though limited by limited platform engagement signals."
+CAND_0024878,51,0.308129,"Solid technical baseline with engineering experience at HCL in the IT Services sector, though limited by partial consulting-firm tenure in career history."
+CAND_0038206,52,0.307579,"Solid technical baseline with strong open-source activity (GitHub score: 82/100), though limited by a long notice period of 120 days."
+CAND_0021410,53,0.307141,"Solid technical baseline with 4.0 years in applied ML/AI engineering with a relevant title (Junior ML Engineer), though limited by limited platform engagement signals."
+CAND_0020708,54,0.30696,"Solid technical baseline with strong open-source activity (GitHub score: 84/100), though limited by limited platform engagement signals."
+CAND_0086893,55,0.305541,"Solid technical baseline with 3.9 years in applied ML/AI engineering with a relevant title (ML Engineer), though limited by an experience level of 3.9 years outside the preferred 5–9 range."
+CAND_0081852,56,0.305375,"Solid technical baseline with 5.9 years in applied ML/AI engineering with a relevant title (Senior Data Scientist), though limited by limited platform engagement signals."
+CAND_0082086,57,0.305201,"Solid technical baseline with 6.0 years in applied ML/AI engineering with a relevant title (Senior Software Engineer (ML)), though limited by limited platform engagement signals."
+CAND_0030468,58,0.304571,"Solid technical baseline with 5.4 years in applied ML/AI engineering with a relevant title (Senior Applied Scientist), though limited by limited platform engagement signals."
+CAND_0061655,59,0.304257,"Solid technical baseline with 4.6 years in applied ML/AI engineering with a relevant title (Machine Learning Engineer), though limited by limited platform engagement signals."
+CAND_0078002,60,0.30386,"Solid technical baseline with 6.3 years in applied ML/AI engineering with a relevant title (Machine Learning Engineer), though limited by limited platform engagement signals."
+CAND_0083307,61,0.303638,"Ranked primarily due to a long notice period of 120 days. However, 7.8 years in applied ML/AI engineering with a relevant title (Search Engineer) justifies inclusion in the extended pipeline."
+CAND_0086154,62,0.3034,"Ranked primarily due to overall profile gaps relative to JD requirements. However, 6.8 years in applied ML/AI engineering with a relevant title (Data Scientist) justifies inclusion in the extended pipeline."
+CAND_0061265,63,0.301477,"Ranked primarily due to a long notice period of 120 days. However, 6.6 years in applied ML/AI engineering with a relevant title (Recommendation Systems Engineer) justifies inclusion in the extended pipeline."
+CAND_0067866,64,0.30144,"Ranked primarily due to overall profile gaps relative to JD requirements. However, 6.4 years in applied ML/AI engineering with a relevant title (Senior Software Engineer (ML)) justifies inclusion in the extended pipeline."
+CAND_0084819,65,0.301301,"Ranked primarily due to a long notice period of 120 days. However, a verified platform assessment score of 89/100 on a relevant AI/ML skill justifies inclusion in the extended pipeline."
+CAND_0019480,66,0.300972,"Ranked primarily due to an experience level of 2.8 years outside the preferred 5–9 range. However, strong open-source activity (GitHub score: 69/100) justifies inclusion in the extended pipeline."
+CAND_0075574,67,0.299624,"Ranked primarily due to overall profile gaps relative to JD requirements. However, 5.7 years in applied ML/AI engineering with a relevant title (Machine Learning Engineer) justifies inclusion in the extended pipeline."
+CAND_0099965,68,0.299046,"Ranked primarily due to a long notice period of 120 days. However, 4.6 years in applied ML/AI engineering with a relevant title (Junior ML Engineer) justifies inclusion in the extended pipeline."
+CAND_0030784,69,0.297845,"Ranked primarily due to overall profile gaps relative to JD requirements. However, 4.4 years in applied ML/AI engineering with a relevant title (Data Scientist) justifies inclusion in the extended pipeline."
+CAND_0046132,70,0.297723,"Ranked primarily due to overall profile gaps relative to JD requirements. However, 4.3 years in applied ML/AI engineering with a relevant title (AI Research Engineer) justifies inclusion in the extended pipeline."
+CAND_0036437,71,0.29642,"Ranked primarily due to overall profile gaps relative to JD requirements. However, 4.8 years in applied ML/AI engineering with a relevant title (Search Engineer) justifies inclusion in the extended pipeline."
+CAND_0049538,72,0.295842,"Ranked primarily due to overall profile gaps relative to JD requirements. However, 5.8 years in applied ML/AI engineering with a relevant title (Applied ML Engineer) justifies inclusion in the extended pipeline."
+CAND_0054546,73,0.295695,"Ranked primarily due to overall profile gaps relative to JD requirements. However, strong open-source activity (GitHub score: 75/100) justifies inclusion in the extended pipeline."
+CAND_0096209,74,0.29556,"Ranked primarily due to overall profile gaps relative to JD requirements. However, 4.2 years in applied ML/AI engineering with a relevant title (ML Engineer) justifies inclusion in the extended pipeline."
+CAND_0062247,75,0.295033,"Ranked primarily due to overall profile gaps relative to JD requirements. However, 7.3 years in applied ML/AI engineering with a relevant title (AI Engineer) justifies inclusion in the extended pipeline."
+CAND_0024990,76,0.294962,"Ranked primarily due to overall profile gaps relative to JD requirements. However, 5.2 years in applied ML/AI engineering with a relevant title (Junior ML Engineer) justifies inclusion in the extended pipeline."
+CAND_0004402,77,0.2946,"Ranked primarily due to overall profile gaps relative to JD requirements. However, 6.0 years in applied ML/AI engineering with a relevant title (AI Research Engineer) justifies inclusion in the extended pipeline."
+CAND_0030031,78,0.294428,"Ranked primarily due to overall profile gaps relative to JD requirements. However, 5.7 years in applied ML/AI engineering with a relevant title (AI Engineer) justifies inclusion in the extended pipeline."
+CAND_0045778,79,0.294308,"Ranked primarily due to overall profile gaps relative to JD requirements. However, strong open-source activity (GitHub score: 84/100) justifies inclusion in the extended pipeline."
+CAND_0007009,80,0.293858,"Ranked primarily due to overall profile gaps relative to JD requirements. However, 7.9 years in applied ML/AI engineering with a relevant title (Recommendation Systems Engineer) justifies inclusion in the extended pipeline."
+CAND_0085335,81,0.29334,"Ranked primarily due to a long notice period of 120 days. However, 3.1 years in applied ML/AI engineering with a relevant title (ML Engineer) justifies inclusion in the extended pipeline."
+CAND_0037980,82,0.292692,"Ranked primarily due to overall profile gaps relative to JD requirements. However, 9.0 years in applied ML/AI engineering with a relevant title (Senior Applied Scientist) justifies inclusion in the extended pipeline."
+CAND_0009691,83,0.292478,"Ranked primarily due to a long notice period of 120 days. However, 6.2 years in applied ML/AI engineering with a relevant title (Applied ML Engineer) justifies inclusion in the extended pipeline."
+CAND_0090155,84,0.292306,"Ranked primarily due to overall profile gaps relative to JD requirements. However, 5.8 years in applied ML/AI engineering with a relevant title (ML Engineer) justifies inclusion in the extended pipeline."
+CAND_0072688,85,0.291708,"Ranked primarily due to overall profile gaps relative to JD requirements. However, 6.9 years in applied ML/AI engineering with a relevant title (Data Scientist) justifies inclusion in the extended pipeline."
+CAND_0066999,86,0.291325,"Ranked primarily due to overall profile gaps relative to JD requirements. However, 5.9 years in applied ML/AI engineering with a relevant title (Recommendation Systems Engineer) justifies inclusion in the extended pipeline."
+CAND_0073314,87,0.291164,"Ranked primarily due to overall profile gaps relative to JD requirements. However, 5.2 years in applied ML/AI engineering with a relevant title (Senior Software Engineer (ML)) justifies inclusion in the extended pipeline."
+CAND_0033179,88,0.291115,"Ranked primarily due to partial consulting-firm tenure in career history. However, 6.9 years in applied ML/AI engineering with a relevant title (AI Research Engineer) justifies inclusion in the extended pipeline."
+CAND_0061339,89,0.291086,"Ranked primarily due to overall profile gaps relative to JD requirements. However, strong open-source activity (GitHub score: 85/100) justifies inclusion in the extended pipeline."
+CAND_0086022,90,0.290962,"Ranked primarily due to overall profile gaps relative to JD requirements. However, 5.3 years in applied ML/AI engineering with a relevant title (Senior Applied Scientist) justifies inclusion in the extended pipeline."
+CAND_0036184,91,0.290958,"Ranked primarily due to overall profile gaps relative to JD requirements. However, 6.0 years in applied ML/AI engineering with a relevant title (Recommendation Systems Engineer) justifies inclusion in the extended pipeline."
+CAND_0028527,92,0.290736,"Ranked primarily due to an overseas location (USA) requiring relocation before joining. However, engineering experience at Tech Mahindra in the IT Services sector justifies inclusion in the extended pipeline."
+CAND_0016659,93,0.290695,"Ranked primarily due to overall profile gaps relative to JD requirements. However, a verified platform assessment score of 77/100 on a relevant AI/ML skill justifies inclusion in the extended pipeline."
+CAND_0077498,94,0.290334,"Ranked primarily due to overall profile gaps relative to JD requirements. However, 5.4 years in applied ML/AI engineering with a relevant title (Senior Software Engineer (ML)) justifies inclusion in the extended pipeline."
+CAND_0047521,95,0.289881,"Ranked primarily due to a long notice period of 120 days. However, strong open-source activity (GitHub score: 66/100) justifies inclusion in the extended pipeline."
+CAND_0070514,96,0.289612,"Ranked primarily due to overall profile gaps relative to JD requirements. However, engineering experience at Glance in the AI/ML sector justifies inclusion in the extended pipeline."
+CAND_0055960,97,0.289494,"Ranked primarily due to an overseas location (USA) requiring relocation before joining. However, engineering experience at Dream11 in the Gaming sector justifies inclusion in the extended pipeline."
+CAND_0037566,98,0.28871,"Ranked primarily due to overall profile gaps relative to JD requirements. However, 6.9 years in applied ML/AI engineering with a relevant title (Machine Learning Engineer) justifies inclusion in the extended pipeline."
+CAND_0017960,99,0.288709,"Ranked primarily due to overall profile gaps relative to JD requirements. However, 7.7 years in applied ML/AI engineering with a relevant title (Recommendation Systems Engineer) justifies inclusion in the extended pipeline."
+CAND_0058783,100,0.2886,"Ranked primarily due to an experience level of 3.2 years outside the preferred 5–9 range. However, engineering experience at Tech Mahindra in the IT Services sector justifies inclusion in the extended pipeline."
