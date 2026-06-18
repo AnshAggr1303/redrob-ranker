@@ -401,6 +401,14 @@ def main():
 
     print(f"      Semantic scores — min: {S_sem.min():.4f} | "
           f"mean: {S_sem.mean():.4f} | max: {S_sem.max():.4f}")
+
+    # Normalize within eligible pool — raw cosine sims cluster in a narrow range;
+    # stretching to [0, 1] dramatically amplifies discrimination between candidates.
+    sem_eligible = metadata.loc[~disqualified, "S_sem"]
+    sem_min = float(sem_eligible.min())
+    sem_max = float(sem_eligible.max())
+    metadata["S_sem_norm"] = ((metadata["S_sem"] - sem_min) / (sem_max - sem_min + 1e-9)).clip(0, 1)
+    print(f"      Semantic norm: eligible range [{sem_min:.4f}, {sem_max:.4f}] -> [0.0, 1.0]")
     print(f"      Done in {time.time()-t0:.2f}s")
 
     # ------------------------------------------------------------------
@@ -447,6 +455,43 @@ def main():
     metadata["S_struct"] = (yoe_score + loc_score + notice_score +
                              github_struct + edu_score + consulting_pen + assess_struct)
 
+    # --- Additional signals not captured in the original structured score ---
+
+    # Current title relevance — directly signals ML/AI domain fit
+    title_lower = metadata["current_title"].str.lower().fillna("")
+    high_title_mask = title_lower.str.contains(
+        r"machine learning|\bml\b|\bai\b|\bnlp\b|data scientist|search engineer|"
+        r"ranking|recommendation|applied scientist|research engineer|"
+        r"information retrieval|deep learning|\bllm\b",
+        na=False, regex=True,
+    )
+    partial_title_mask = ~high_title_mask & title_lower.str.contains(
+        r"engineer|scientist|researcher|analytics|data", na=False, regex=True,
+    )
+    title_bonus = np.select([high_title_mask, partial_title_mask], [0.15, 0.04], default=0.0)
+
+    # Current industry relevance
+    RELEVANT_INDUSTRIES = {
+        "Artificial Intelligence", "Machine Learning", "Technology",
+        "SaaS", "FinTech", "E-Commerce", "Data Analytics",
+    }
+    industry_bonus = metadata["current_industry"].isin(RELEVANT_INDUSTRIES).astype(float) * 0.05
+
+    # Offer acceptance rate — candidates who actually convert are more valuable
+    oar = metadata["offer_acceptance_rate"].astype(float)
+    oar_bonus = np.where(oar > 0, np.clip(oar * 0.03, 0.0, 0.03), 0.0)
+
+    # Trust / completeness signals — verified contact info and complete profiles
+    verified_bonus = (
+        metadata["verified_email"].astype(float) * 0.01 +
+        metadata["verified_phone"].astype(float) * 0.01 +
+        metadata["linkedin_connected"].astype(float) * 0.01
+    )
+    completeness_bonus = (metadata["profile_completeness_score"] / 100.0).clip(0, 1) * 0.02
+
+    metadata["S_struct"] = (metadata["S_struct"] + title_bonus + industry_bonus
+                             + oar_bonus + verified_bonus + completeness_bonus)
+
     # Vectorized availability multiplier (replaces compute_availability_multiplier apply loop)
     days_since = (EVALUATION_ANCHOR_DATE - pd.to_datetime(metadata["last_active_date"])).dt.days
     f_active = np.select(
@@ -463,9 +508,9 @@ def main():
     metadata["github_norm"] = (github_raw / 100.0).clip(0, 1)
     metadata["assess_norm"] = (assess / 100.0).clip(0, 1)   # fix: was bool*0.02 * 0.05 = 0.001 max
 
-    # Final formula
+    # Final formula — uses S_sem_norm (eligible-pool-normalized) for full discrimination
     metadata["S_final"] = (
-        (metadata["S_sem"] * 0.55 + metadata["S_struct"] * 0.30)
+        (metadata["S_sem_norm"] * 0.55 + metadata["S_struct"] * 0.30)
         * metadata["avail_mult"]
         + metadata["github_norm"] * 0.05
         + metadata["assess_norm"] * 0.05
