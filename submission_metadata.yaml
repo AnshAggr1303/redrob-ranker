@@ -1,0 +1,26 @@
+team_name: 2bits
+team_leader: Ansh Agrawal
+team_members:
+  - name: Ansh Agrawal
+    email: anshagrawal148@gmail.com
+    role: Pipeline architecture, scoring system, runtime ranker
+  - name: Atharva Tiwari
+    email: atharvat2006@gmail.com
+    role: Offline pre-computation, embedding generation
+
+challenge: Intelligent Candidate Discovery & Ranking
+hackathon: Redrob India Runs Data & AI Challenge 2026
+
+submission:
+  github_repo: https://github.com/AnshAggr1303/redrob-ranker
+  ranked_output: outputs/submission.csv
+  evaluation_anchor_date: "2026-06-13"
+
+pipeline:
+  phase_1_script: src/precompute.py
+  phase_2_script: src/rank.py
+  embedding_model: all-MiniLM-L6-v2
+  runtime_seconds: 3.7
+  eligible_pool: 32001
+  honeypots_detected: 40
+  total_disqualified: 67999
