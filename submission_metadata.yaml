@@ -8,11 +8,12 @@ team_members:
     email: atharvat2006@gmail.com
     role: Offline pre-computation, embedding generation
 
-challenge: Intelligent Candidate Discovery & Ranking
+challenge: The Data & AI Challenge
 hackathon: Redrob India Runs Data & AI Challenge 2026
 
 submission:
   github_repo: https://github.com/AnshAggr1303/redrob-ranker
+  sandbox_link: https://huggingface.co/spaces/AnshAgg/redrob-ranker
   ranked_output: outputs/submission.csv
   evaluation_anchor_date: "2026-06-13"
 
